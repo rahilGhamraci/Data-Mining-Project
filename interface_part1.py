@@ -685,7 +685,7 @@ def data_integration_page():
 #......................................................................................................................
 def redundancies_removal_page():
     st.title("Redundancies Removal Page")
-    data_choice = st.selectbox("Choose an option", ["", "Horizontal", "Correlation-Based Removal", "Low Variance Columns"])
+    data_choice = st.selectbox("Choose an option", ["", "Horizontal", "Correlation-Based Removal", "Low Variance Columns", "Customized Removal"])
     
     if data_choice == "":
         st.error("Please select a removal option.")
@@ -708,6 +708,12 @@ def redundancies_removal_page():
             st.session_state.reduced_lvar_df = reduced_lvar_df
             st.dataframe(reduced_lvar_df)
 
+        elif data_choice == "Customized Removal" and "reduced_v_customized_df" not in st.session_state:
+            
+            reduced_v_customized_df = load_csv_with_progress("reduced_v_customized_df.csv")
+            st.session_state.reduced_v_customized_df = reduced_v_customized_df
+            st.dataframe(reduced_v_customized_df)
+
         else:
             if data_choice == "Horizontal":
                 st.dataframe(st.session_state.final_merged_data)
@@ -715,6 +721,8 @@ def redundancies_removal_page():
                 st.dataframe(st.session_state.reduced_correlation_rm_df)
             elif data_choice == "Low Variance Columns":
                 st.dataframe(st.session_state.reduced_lvar_df)
+            elif data_choice == "Customized Removal":
+                st.dataframe(st.session_state.reduced_v_customized_df)
 
 #......................................................................................................................
 def normalization_page():
