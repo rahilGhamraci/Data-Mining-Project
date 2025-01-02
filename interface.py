@@ -839,20 +839,35 @@ def models_page():
                         
                     
                         st.success("Decision Tree model loaded successfully!")
-                        print_tree(root)
-                   
+                        #print_tree(root)
 
                         sample_instance = {}
-                        st.write("Enter values for the following attributes:")
+                        all_values_entered = True  # Flag to check if all values are entered
 
                         for attribute in attributes:
-                            value = st.text_input(f"{attribute}:", "0")
-                            sample_instance[attribute] = float(value)
+                            value = st.text_input(f"{attribute}:", "")
+                            if value.strip() == "":  # Check for empty input
+                                all_values_entered = False  # Mark as incomplete if any value is missing
+                            else:
+                                try:
+                                    sample_instance[attribute] = float(value)  # Convert to float
+                                except ValueError:
+                                    st.error(f"Invalid input for {attribute}. Please enter a numeric value.")
+                                    all_values_entered = False
+
                         
-                        if sample_instance:
-                            with st.spinner("Start Predecting..."):
+                        # Display the button and proceed only if all values are entered and the button is clicked
+                        if st.button("Start Prediction") and all_values_entered:
+                            with st.spinner("Predicting..."):
                                 prediction = predict(root, None, sample_instance)
                             st.write("Prediction for the entered instance:", prediction)
+                            
+
+                            
+                               
+                   
+
+                     
                        
 
          
@@ -878,20 +893,24 @@ def models_page():
                         st.success("Random Forest model loaded successfully!")
 
                         sample_instance = {}
-                        st.write("Enter values for the following attributes:")
+                        all_values_entered = True  # Flag to check if all values are entered
 
                         for attribute in attributes:
-                            value = st.text_input(f"{attribute}:", "0")
-                            sample_instance[attribute] = float(value)
+                            value = st.text_input(f"{attribute}:", "")
+                            if value.strip() == "":  # Check for empty input
+                                all_values_entered = False
+                            sample_instance[attribute] = float(value) if value.strip() else None
                         
-                        if sample_instance:
-                            with st.spinner("Start Predecting..."):
+                        # Display the button and proceed only if all values are entered and the button is clicked
+                        if st.button("Start Prediction") and all_values_entered:
+                            with st.spinner("Predicting..."):
                                 all_predictions = []
                                 for base_learner in base_learners:
                                     prediction = predict(base_learner, None, sample_instance)
                                     all_predictions.append(prediction)
                                 final_prediction = np.mean(all_predictions, axis=0)
                             st.write("Prediction for the entered instance:", final_prediction)
+                            
                             
                     
                                 
